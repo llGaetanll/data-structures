@@ -57,7 +57,7 @@ remove (Node (a, t) l r) a'
 
 preorderMap :: (Ord a) => BinaryTree a t -> (Maybe t -> b) -> [b]
 preorderMap Null f = [f Nothing]
-preorderMap (Node (a, t) l r) f = concat [[f (Just t)], inorderMap l f, inorderMap r f]
+preorderMap (Node (a, t) l r) f = concat [[f (Just t)], preorderMap l f, preorderMap r f]
 
 
 
@@ -69,4 +69,4 @@ inorderMap (Node (a, t) l r) f = concat [inorderMap l f, [f (Just t)], inorderMa
 
 postorderMap :: (Ord a) => BinaryTree a t -> (Maybe t -> b) -> [b]
 postorderMap Null f = [f Nothing]
-postorderMap (Node (a, t) l r) f = concat [inorderMap l f, inorderMap r f, [f (Just t)]]
+postorderMap (Node (a, t) l r) f = concat [postorderMap l f, postorderMap r f, [f (Just t)]]
