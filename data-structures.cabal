@@ -28,6 +28,10 @@ executable data-structures
 
     -- LANGUAGE extensions used by modules in this package.
     -- other-extensions:
-    build-depends:    base ^>=4.17.2.0
+    build-depends: 
+      base ^>=4.17.2.0,
+      HUnit,
+      QuickCheck
+
     hs-source-dirs:   app
     default-language: Haskell2010
