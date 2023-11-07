@@ -1,6 +1,8 @@
 module Main where
 
 import BinaryTree
+import AvlTree
+
 import Test.HUnit
 
 main :: IO ()

@@ -26,35 +26,34 @@ insert (Node (a, t) l r) (a', t')
 fromList :: (Ord a) => [(a, t)] -> BinaryTree a t
 fromList = foldl insert Null
 
-leftMost Null = Null
-leftMost (Node (a, t) Null r) = Node (a, t) Null r
-leftMost (Node _ l _) = leftMost l
-
-rightMost Null = Null
-rightMost (Node (a, t) l Null) = Node (a, t) l Null
-rightMost (Node _ _ r) = rightMost r
-
 inorderSucc :: (Ord a) => BinaryTree a t -> BinaryTree a t
 inorderSucc Null = Null
 inorderSucc (Node (a, t) l r) = leftMost r
+  where
+    leftMost :: (Ord a) => BinaryTree a t -> BinaryTree a t
+    leftMost Null = Null
+    leftMost (Node (a, t) Null r) = Node (a, t) Null r
+    leftMost (Node _ l _) = leftMost l
 
 inorderPred :: (Ord a) => BinaryTree a t -> BinaryTree a t
 inorderPred Null = Null
 inorderPred (Node (a, t) l r) = rightMost l
+  where
+    rightMost :: (Ord a) => BinaryTree a t -> BinaryTree a t
+    rightMost Null = Null
+    rightMost (Node (a, t) l Null) = Node (a, t) l Null
+    rightMost (Node _ _ r) = rightMost r
 
 remove :: (Ord a) => BinaryTree a t -> a -> BinaryTree a t
--- leaf
 remove (Node (a, _) Null Null) a' | a == a' = Null
--- one child
-remove (Node (a, _) (Node (b, t) l r) Null) a' | a == a' = Node (b, t) l r
-remove (Node (a, _) Null (Node (b, t) l r)) a' | a == a' = Node (b, t) l r
--- two children: replace the current node with inorder successor & delete inorder succesor
+remove (Node (a, _) l Null) a' | a == a' = l
+remove (Node (a, _) Null r) a' | a == a' = r
 remove (Node (a, t) l r) a'
   | a < a' = Node (a, t) l (remove r a')
   | a > a' = Node (a, t) (remove l a') r
   | otherwise =
-      let (Node (sa, st) sl sr) = inorderSucc (Node (a, t) l r)
-       in Node (sa, st) l (remove r sa)
+      let (Node (a', t') l' r') = inorderSucc (Node (a, t) l r)
+       in Node (a', t') l (remove r a')
 
 subTree :: (Ord a) => BinaryTree a t -> (a, a) -> BinaryTree a t
 subTree Null _ = Null
@@ -97,7 +96,6 @@ testFromList = TestCase $ do
   let t = fromList [(2, 2), (1, 1), (3, 3)] :: BinaryTree Int Int
   let r = Node (2, 2) (Node (1, 1) Null Null) (Node (3, 3) Null Null) :: BinaryTree Int Int
   assertEqual "From List" t r
-
 
 testFind :: Test
 testFind = TestCase $ do
